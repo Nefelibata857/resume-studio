@@ -19,17 +19,17 @@
       title: '基本信息',
       desc: 'HR 第一眼看到的部分，务必准确',
       fields: [
-        { key: 'name', label: '姓名', type: 'text', ph: '王勇超', half: true },
-        { key: 'jobTitle', label: '求职意向 / 身份', type: 'text', ph: '建筑设计师 · 2027 届', half: true },
+        { key: 'name', label: '姓名', type: 'text', ph: '张三', half: true },
+        { key: 'jobTitle', label: '求职意向 / 身份', type: 'text', ph: '应聘岗位 · 2027 届', half: true },
         { key: 'phone', label: '手机', type: 'text', ph: '138 0000 0000', half: true },
         { key: 'email', label: '邮箱', type: 'text', ph: 'you@example.com', half: true },
-        { key: 'city', label: '所在城市', type: 'text', ph: '西安', half: true },
+        { key: 'city', label: '所在城市', type: 'text', ph: '城市名', half: true },
         { key: 'website', label: '个人主页 / 作品链接', type: 'text', ph: 'https://your-name.github.io', half: true },
         {
           key: 'summary',
           label: '个人简介',
           type: 'textarea',
-          ph: '一句话讲清你是谁、擅长什么、想做什么。例如：\n城市设计专业应届生，熟悉总图强排与户型推敲，参与 8 个居住项目，擅长用图纸讲清设计逻辑。',
+          ph: '一句话讲清你是谁、擅长什么、想做什么。例如：\nXX 专业应届生，做过 X 个项目，擅长用 X 解决 X 问题，成果是 X。',
           hint: '建议 60–120 字，突出与目标岗位相关的能力'
         },
         { key: 'photo', label: '证件照', type: 'photo', hint: '可选。竖向 3:4 最佳，会自动压缩' }
@@ -44,8 +44,8 @@
       itemLabel: it => it.school || '新的教育经历',
       itemSub: it => it.major,
       fields: [
-        { key: 'school', label: '学校', type: 'text', ph: '西安建筑科技大学', half: true },
-        { key: 'major', label: '专业', type: 'text', ph: '城市设计', half: true },
+        { key: 'school', label: '学校', type: 'text', ph: '学校全称', half: true },
+        { key: 'major', label: '专业', type: 'text', ph: '专业名称', half: true },
         { key: 'degree', label: '学历', type: 'text', ph: '本科', half: true },
         { key: 'gpa', label: 'GPA / 排名（可选）', type: 'text', ph: '3.8 / 4.0　专业前 5%', half: true },
         { key: 'start', label: '入学时间', type: 'month', half: true },
@@ -64,7 +64,7 @@
       itemLabel: it => it.company || '新的实习经历',
       itemSub: it => it.role,
       fields: [
-        { key: 'company', label: '公司 / 单位', type: 'text', ph: '基准方中建筑设计有限公司', half: true },
+        { key: 'company', label: '公司 / 单位', type: 'text', ph: '公司全称', half: true },
         { key: 'role', label: '岗位', type: 'text', ph: '建筑设计实习生', half: true },
         { key: 'start', label: '开始时间', type: 'month', half: true },
         { key: 'end', label: '结束时间', type: 'month', half: true },
@@ -73,7 +73,7 @@
           label: '工作内容与成果',
           type: 'textarea',
           tall: true,
-          ph: '每行一条，尽量写清「做了什么 + 做出什么结果」：\n参与 8 个居住项目的强排与总图，独立完成 3 个户型方案\n协助完成 XX 项目投标文本，方案中标',
+          ph: '每行一条，尽量写清「做了什么 + 做出什么结果」：\n负责 XX 模块，独立完成 XX 份交付物\n协助完成 XX 项目，成果是 XX',
           hint: '用数字说话：数量、排名、效率提升，比形容词有说服力'
         }
       ]
@@ -210,20 +210,20 @@
   function demo() {
     const d = blank();
     d.profile = {
-      name: '王勇超',
+      name: '陈嘉禾',
       jobTitle: '建筑设计师 · 2027 届',
       phone: '138 0000 0000',
-      email: 'wangyongchao@example.com',
-      city: '西安',
-      website: 'https://wangyongchao.github.io',
-      summary: '城市设计专业应届生，熟悉居住项目强排与总图推敲，实习期间参与 8 个居住项目。擅长用图纸与数据把设计逻辑讲清楚，对户型产品与场地关系有持续观察。',
+      email: 'chenjiahe@example.com',
+      city: '杭州',
+      website: 'https://chenjiahe.github.io',
+      summary: '建筑学专业应届生，熟悉居住项目强排与总图推敲，实习期间参与 5 个居住项目。擅长用图纸与数据把设计逻辑讲清楚，对户型产品与场地关系有持续观察。',
       photo: photoPh()
     };
 
     d.education = [{
       id: U.uid('edu'),
-      school: '西安建筑科技大学',
-      major: '城市设计',
+      school: '示例大学',
+      major: '建筑学',
       degree: '本科',
       gpa: '3.8 / 4.0　专业前 5%',
       start: '2023-09',
@@ -233,11 +233,11 @@
 
     d.experience = [{
       id: U.uid('exp'),
-      company: '基准方中建筑设计有限公司（西安）',
+      company: '示例建筑设计有限公司',
       role: '建筑设计实习生',
       start: '2026-07',
       end: '2026-08',
-      desc: '参与 8 个居住项目的强排与总图设计，独立完成 3 个户型方案\n负责图册「总图 + 产品」板块，独立完成 40 余页版面\n配合主创完成投标文本，方案进入第二轮评审'
+      desc: '参与 5 个居住项目的强排与总图设计，独立完成 3 个户型方案\n负责图册「总图 + 产品」板块，独立完成 40 余页版面\n配合主创完成投标文本，方案进入第二轮评审'
     }];
 
     d.projects = [{
@@ -266,19 +266,19 @@
 
     d.awards = [
       { id: U.uid('aw'), title: '全国大学生建筑设计竞赛 三等奖', date: '2025-11', issuer: '中国建筑学会', desc: '全国前 3%' },
-      { id: U.uid('aw'), title: '校级优秀学生干部', date: '2025-06', issuer: '西安建筑科技大学', desc: '' }
+      { id: U.uid('aw'), title: '校级优秀学生干部', date: '2025-06', issuer: '示例大学', desc: '' }
     ];
 
     d.works = [
       { id: U.uid('w'), title: '老城街角 · 微更新', category: '建筑设计', year: '2026', desc: '课程设计 · 主创', cover: ph('总平面与轴测', 'URBAN RENEWAL', '#0f766e', '#134e4a'), images: [ph('总平面与轴测', 'URBAN RENEWAL', '#0f766e', '#134e4a')] },
-      { id: U.uid('w'), title: '云璟 · 居住区规划', category: '居住规划', year: '2026', desc: '实习项目 · 强排', cover: ph('强排方案', 'RESIDENTIAL', '#1e40af', '#1e3a8a'), images: [ph('强排方案', 'RESIDENTIAL', '#1e40af', '#1e3a8a')] },
-      { id: U.uid('w'), title: '溪越里 · 图册版面', category: '平面版面', year: '2026', desc: '实习项目 · 图册', cover: ph('图册版面', 'EDITORIAL', '#9a3412', '#7c2d12'), images: [ph('图册版面', 'EDITORIAL', '#9a3412', '#7c2d12')] },
+      { id: U.uid('w'), title: '滨水 · 居住区规划', category: '居住规划', year: '2026', desc: '实习项目 · 强排', cover: ph('强排方案', 'RESIDENTIAL', '#1e40af', '#1e3a8a'), images: [ph('强排方案', 'RESIDENTIAL', '#1e40af', '#1e3a8a')] },
+      { id: U.uid('w'), title: '项目图册 · 版面设计', category: '平面版面', year: '2026', desc: '实习项目 · 图册', cover: ph('图册版面', 'EDITORIAL', '#9a3412', '#7c2d12'), images: [ph('图册版面', 'EDITORIAL', '#9a3412', '#7c2d12')] },
       { id: U.uid('w'), title: '山院 · 民宿改造', category: '室内设计', year: '2025', desc: '课程作业 · 独立完成', cover: ph('剖透视', 'INTERIOR', '#6d28d9', '#4c1d95'), images: [ph('剖透视', 'INTERIOR', '#6d28d9', '#4c1d95')] },
       { id: U.uid('w'), title: '城市肌理拼贴', category: '视觉实验', year: '2025', desc: '个人练习', cover: ph('拼贴实验', 'COLLAGE', '#be123c', '#881337'), images: [ph('拼贴实验', 'COLLAGE', '#be123c', '#881337')] },
       { id: U.uid('w'), title: '手绘 · 街巷速写', category: '手绘', year: '2024', desc: '日常记录', cover: ph('钢笔速写', 'SKETCH', '#475569', '#1e293b'), images: [ph('钢笔速写', 'SKETCH', '#475569', '#1e293b')] }
     ];
 
-    d.settings.siteTitle = '王勇超 · 作品集';
+    d.settings.siteTitle = '陈嘉禾 · 作品集';
     return d;
   }
 
