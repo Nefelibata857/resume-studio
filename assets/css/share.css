@@ -1,0 +1,388 @@
+/* ===========================================================
+   share.css — 在线简历阅读页 s.html
+   面向手机：单栏、大字、可点联系方式，打印时自动变成黑白文档
+   =========================================================== */
+* { box-sizing: border-box; }
+
+:root {
+  --ink: #14181f;
+  --ink2: #424b57;
+  --muted: #7c8694;
+  --line: #e6eaef;
+  --line-soft: #f0f3f7;
+  --accent: #1d4ed8;
+  --bg: #ffffff;
+  --bg2: #f7f8fa;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+          "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+}
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.72;
+  -webkit-font-smoothing: antialiased;
+  /* 内容少的时候让页脚贴底，不要浮在半空 */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+#view {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* flex 子项的 auto 外边距会关掉 stretch，这里显式给宽度，
+   否则 main / footer 会收缩成内容的宽度、跑到中间去 */
+#view > .wrap { width: 100%; }
+
+main { flex: 1 0 auto; }
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.wrap {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 22px;
+}
+
+/* ---------------- 顶部：姓名区 ---------------- */
+.hero {
+  padding: 56px 0 34px;
+  border-bottom: 1px solid var(--line);
+}
+
+.hero-kicker {
+  font-size: 11px;
+  letter-spacing: .28em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 18px;
+}
+
+.hero h1 {
+  margin: 0;
+  font-size: clamp(30px, 8.2vw, 44px);
+  line-height: 1.12;
+  font-weight: 700;
+  letter-spacing: .05em;
+}
+
+.hero .role {
+  margin: 12px 0 0;
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: .09em;
+  color: var(--accent);
+}
+
+.hero .bio {
+  margin: 20px 0 0;
+  font-size: 15px;
+  line-height: 1.85;
+  color: var(--ink2);
+  max-width: 60ch;
+}
+
+/* ---------------- 联系方式 ---------------- */
+.contact {
+  margin: 26px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px 10px;
+  padding: 0;
+  list-style: none;
+}
+
+.contact li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--ink2);
+  background: var(--bg2);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 5px 11px;
+  max-width: 100%;
+  word-break: break-all;
+}
+
+.contact li a { color: var(--ink2); }
+.contact li a:hover { color: var(--accent); }
+.contact svg {
+  width: 12px; height: 12px;
+  flex-shrink: 0;
+  fill: var(--muted);
+}
+
+/* ---------------- 正文分区 ---------------- */
+.sec { padding: 40px 0 0; }
+
+.sec-head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.sec-head h2 {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.sec-head .rule {
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+.sec-head .count {
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: .06em;
+  white-space: nowrap;
+}
+
+.rows { display: flex; flex-direction: column; gap: 20px; }
+
+.row {
+  display: flex;
+  gap: 16px;
+  align-items: baseline;
+}
+
+.row-main { flex: 1; min-width: 0; }
+
+.row h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.row .sub {
+  margin: 3px 0 0;
+  font-size: 13px;
+  color: var(--accent);
+  letter-spacing: .01em;
+}
+
+.row .desc {
+  margin: 8px 0 0;
+  font-size: 13.5px;
+  line-height: 1.82;
+  color: var(--ink2);
+  white-space: pre-line;
+}
+
+.row .date {
+  flex-shrink: 0;
+  font-size: 11.5px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: .03em;
+  white-space: nowrap;
+  padding-top: 2px;
+}
+
+/* ---------------- 技能 ---------------- */
+.skill {
+  display: flex;
+  gap: 14px;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.skill b {
+  flex-shrink: 0;
+  min-width: 78px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.skill .tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+
+.skill .tags em {
+  font-style: normal;
+  font-size: 12.5px;
+  color: var(--ink2);
+  background: var(--bg2);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 2px 9px;
+}
+
+/* ---------------- 作品索引 ---------------- */
+.wk-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 1px;
+  background: var(--line-soft);
+  border-top: 1px solid var(--line-soft);
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.wk {
+  display: flex;
+  gap: 14px;
+  align-items: baseline;
+  background: var(--bg);
+  padding: 13px 2px;
+}
+
+.wk .no {
+  flex-shrink: 0;
+  width: 26px;
+  font-size: 11px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: .04em;
+}
+
+.wk .body { flex: 1; min-width: 0; }
+
+.wk .t {
+  font-size: 14.5px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.wk .m {
+  margin: 3px 0 0;
+  font-size: 12.5px;
+  color: var(--muted);
+  letter-spacing: .02em;
+}
+
+/* ---------------- 页脚 ---------------- */
+.foot {
+  margin-top: 56px;
+  /* 只用纵向 padding，横向交给 .wrap —— 否则会把左右 22px 内边距冲掉 */
+  padding-top: 22px;
+  padding-bottom: 56px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  justify-content: space-between;
+  font-size: 11.5px;
+  color: var(--muted);
+  letter-spacing: .04em;
+}
+
+.foot a { color: var(--muted); text-decoration: underline; text-underline-offset: 3px; }
+
+/* ---------------- 浮动操作 ---------------- */
+.fab {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 30;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, .92);
+  backdrop-filter: blur(8px);
+  color: var(--ink2);
+  font-family: inherit;
+  font-size: 12.5px;
+  letter-spacing: .04em;
+  padding: 9px 15px;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 6px 22px rgba(15, 23, 42, .1);
+  transition: .18s;
+}
+
+.fab:hover { color: var(--ink); box-shadow: 0 8px 26px rgba(15, 23, 42, .16); }
+.fab svg { width: 13px; height: 13px; fill: currentColor; }
+
+/* ---------------- 空状态 ---------------- */
+.empty {
+  min-height: 78vh;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 40px 22px;
+}
+
+.empty-mark {
+  width: 46px; height: 46px;
+  margin: 0 auto 20px;
+  border-radius: 12px;
+  background: var(--bg2);
+  border: 1px solid var(--line);
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+  color: var(--muted);
+}
+
+.empty h2 { margin: 0 0 10px; font-size: 17px; font-weight: 600; }
+.empty p { margin: 0 0 22px; color: var(--muted); font-size: 13.5px; line-height: 1.9; }
+
+.btn-line {
+  display: inline-block;
+  border: 1px solid var(--ink);
+  color: var(--ink);
+  border-radius: 3px;
+  padding: 9px 20px;
+  font-size: 13px;
+  letter-spacing: .05em;
+}
+
+.btn-line:hover { background: var(--ink); color: #fff; text-decoration: none; }
+
+/* ---------------- 响应式 ---------------- */
+@media (max-width: 560px) {
+  .hero { padding: 40px 0 28px; }
+  .sec { padding-top: 32px; }
+  .row { flex-direction: column; gap: 4px; }
+  .row .date { order: -1; padding-top: 0; }
+  .skill { gap: 6px; }
+  .skill b { min-width: 0; width: 100%; }
+  .fab { bottom: 12px; right: 12px; }
+}
+
+/* ---------------- 打印 ---------------- */
+@media print {
+  @page { size: A4; margin: 16mm 14mm; }
+
+  body { font-size: 10.5pt; line-height: 1.6; }
+  .wrap { max-width: none; }
+  .fab, .foot a { display: none; }
+
+  .hero { padding: 0 0 14pt; }
+  .hero h1 { font-size: 22pt; }
+  .hero .bio { font-size: 10.5pt; }
+  .sec { padding-top: 16pt; }
+  .sec, .row, .wk { break-inside: avoid; }
+  .wk-list { background: none; border: 0; }
+  .wk { padding: 5pt 0; border-bottom: 1px solid #ddd; }
+
+  a { color: var(--ink); text-decoration: none; }
+  .contact li { background: none; }
+}

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>个人简历</title>
+<meta name="description" content="在线简历">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%231d4ed8'/><path d='M30 72V28h16c11 0 18 6 18 15s-7 15-18 15h-6v14z' fill='white'/></svg>">
+<link rel="stylesheet" href="assets/css/share.css">
+</head>
+<body>
+
+<div id="view"></div>
+
+<button class="fab" id="fab" hidden>
+  <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h5l4 4v3h-1.5V5.5H8V2H5.5v5H4V1zm0 7.5h1.5V14H1V8.5h3zM2.5 10v2H4v-2H2.5zM14 8.5h-3V14h1.5v-1.5H14a2 2 0 000-4zm0 2.5h-1.5v-1H14a.5.5 0 010 1z"/></svg>
+  存为 PDF
+</button>
+
+<script src="assets/vendor/lz-string.min.js"></script>
+<script src="assets/js/share.js"></script>
+<script>
+/* ===========================================================
+   s.html 的运行逻辑
+   数据不在服务器上，全部来自地址栏的 #d= 片段，
+   所以这个页面本身是静态的，任何人打开都会在自己的浏览器里还原。
+   =========================================================== */
+(function () {
+  'use strict';
+
+  var mount = document.getElementById('view');
+  var fab = document.getElementById('fab');
+  var TOOL = 'index.html';
+
+  /* ---------------- 小工具 ---------------- */
+  function esc(s) {
+    if (s == null) return '';
+    return String(s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+  function text(s) {
+    if (!s) return '';
+    return esc(s).replace(/\n/g, '<br>');
+  }
+  function has(v) {
+    if (v == null) return false;
+    if (Array.isArray(v)) return v.length > 0;
+    return String(v).trim() !== '';
+  }
+  function month(v) {
+    if (!v) return '';
+    var m = String(v).match(/^(\d{4})-(\d{1,2})$/);
+    return m ? m[1] + '.' + (m[2].length < 2 ? '0' + m[2] : m[2]) : String(v);
+  }
+  function range(a, b) {
+    var x = month(a), y = month(b);
+    if (x && y) return x + ' — ' + y;
+    if (x) return x + ' — 至今';
+    return y;
+  }
+  function pick(arr) {
+    return arr.filter(has).map(esc).join(' · ');
+  }
+
+  /* ---------------- 空状态 ---------------- */
+  function renderEmpty(title, msg) {
+    mount.innerHTML =
+      '<div class="empty"><div>' +
+        '<div class="empty-mark">✎</div>' +
+        '<h2>' + esc(title) + '</h2>' +
+        '<p>' + msg + '</p>' +
+        '<a class="btn-line" href="' + TOOL + '">去填一份简历</a>' +
+      '</div></div>';
+    fab.hidden = true;
+  }
+
+  var data = window.Share ? window.Share.fromHash() : null;
+
+  if (!data) {
+    if (/[#&?]d=/.test(location.href)) {
+      renderEmpty('这个链接不完整', '有些聊天软件会把很长的网址截断。<br>让发送者重新复制一次，或者直接发文件给你。');
+    } else {
+      renderEmpty('还没有内容', '这是一条空的分享地址。<br>先回工具里把简历填好，再点「发布网站 → 生成在线链接」。');
+    }
+    return;
+  }
+
+  var p = data.profile || {};
+
+  if (!has(p.name)) {
+    renderEmpty('还没有内容', '这份简历是空的，先去工具里把内容填上。');
+    return;
+  }
+
+  /* ---------------- 头部 ---------------- */
+  var title = [p.name, p.jobTitle].filter(has).join(' · ');
+  document.title = title;
+  document.querySelector('meta[name="description"]').setAttribute(
+    'content', has(p.summary) ? String(p.summary).replace(/\s+/g, ' ').slice(0, 110) : title
+  );
+
+  /* ---------------- 联系方式 ---------------- */
+  var contacts = [];
+  if (has(p.email)) {
+    contacts.push('<li><a href="mailto:' + esc(p.email) + '">' + esc(p.email) + '</a></li>');
+  }
+  if (has(p.phone)) {
+    contacts.push('<li><a href="tel:' + esc(String(p.phone).replace(/\s/g, '')) + '">' + esc(p.phone) + '</a></li>');
+  }
+  if (has(p.city)) contacts.push('<li>' + esc(p.city) + '</li>');
+  if (has(p.website)) {
+    var w = String(p.website);
+    contacts.push('<li><a href="' + esc(w) + '" target="_blank" rel="noopener">' +
+      esc(w.replace(/^https?:\/\//, '').replace(/\/$/, '')) + '</a></li>');
+  }
+
+  /* ---------------- 分区 ---------------- */
+  function section(title, count, inner) {
+    if (!inner) return '';
+    return '<section class="sec">' +
+        '<div class="sec-head">' +
+          '<h2>' + esc(title) + '</h2><span class="rule"></span>' +
+          (count ? '<span class="count">' + count + '</span>' : '') +
+        '</div>' + inner +
+      '</section>';
+  }
+
+  function rowUnit(h, sub, desc, date) {
+    return '<div class="row">' +
+        '<div class="row-main">' +
+          '<h3>' + esc(h) + '</h3>' +
+          (sub ? '<p class="sub">' + sub + '</p>' : '') +
+          (desc ? '<p class="desc">' + text(desc) + '</p>' : '') +
+        '</div>' +
+        (date ? '<span class="date">' + esc(date) + '</span>' : '') +
+      '</div>';
+  }
+
+  var html = '';
+
+  /* 教育 */
+  var edu = (data.education || []).filter(function (it) {
+    return has(it.school) || has(it.major);
+  });
+  html += section('教育经历', '', edu.length ? '<div class="rows">' + edu.map(function (it) {
+    return rowUnit(it.school, pick([it.major, it.degree, it.gpa]), it.detail, range(it.start, it.end));
+  }).join('') + '</div>' : '');
+
+  /* 实习 / 工作 */
+  var exp = (data.experience || []).filter(function (it) {
+    return has(it.company) || has(it.role);
+  });
+  html += section('实习 / 工作', '', exp.length ? '<div class="rows">' + exp.map(function (it) {
+    return rowUnit(it.company, pick([it.role]), it.desc, range(it.start, it.end));
+  }).join('') + '</div>' : '');
+
+  /* 项目 */
+  var prj = (data.projects || []).filter(function (it) {
+    return has(it.name);
+  });
+  html += section('项目经历', '', prj.length ? '<div class="rows">' + prj.map(function (it) {
+    var sub = pick([it.role]);
+    if (has(it.link)) {
+      sub += (sub ? ' · ' : '') + '<a href="' + esc(it.link) + '" target="_blank" rel="noopener">查看项目 ↗</a>';
+    }
+    return rowUnit(it.name, sub, it.desc, range(it.start, it.end));
+  }).join('') + '</div>' : '');
+
+  /* 技能 */
+  var sk = (data.skills || []).filter(function (it) {
+    return has(it.group) || (it.items && it.items.length);
+  });
+  html += section('技能证书', '', sk.length ? '<div class="rows">' + sk.map(function (it) {
+    return '<div class="skill">' +
+        '<b>' + esc(it.group || '其他') + '</b>' +
+        '<span class="tags">' + (it.items || []).map(function (t) {
+          return '<em>' + esc(t) + '</em>';
+        }).join('') + '</span>' +
+      '</div>';
+  }).join('') + '</div>' : '');
+
+  /* 荣誉 */
+  var aw = (data.awards || []).filter(function (it) {
+    return has(it.title);
+  });
+  html += section('荣誉奖项', '', aw.length ? '<div class="rows">' + aw.map(function (it) {
+    return rowUnit(it.title, pick([it.issuer, it.desc]), '', month(it.date));
+  }).join('') + '</div>' : '');
+
+  /* 作品索引 */
+  var wk = (data.works || []).filter(function (it) {
+    return has(it.title);
+  });
+  html += section('作品索引', wk.length + ' 件', wk.length ? '<ol class="wk-list">' + wk.map(function (it, i) {
+    var meta = pick([it.category, it.year, it.desc]);
+    return '<li class="wk">' +
+        '<span class="no">' + (i + 1 < 10 ? '0' : '') + (i + 1) + '</span>' +
+        '<div class="body">' +
+          '<div class="t">' + esc(it.title) + '</div>' +
+          (meta ? '<p class="m">' + meta + '</p>' : '') +
+        '</div>' +
+      '</li>';
+  }).join('') + '</ol>' : '');
+
+  /* ---------------- 组装 ---------------- */
+  mount.innerHTML =
+    '<header class="hero"><div class="wrap">' +
+      '<p class="hero-kicker">Resume</p>' +
+      '<h1>' + esc(p.name) + '</h1>' +
+      (has(p.jobTitle) ? '<p class="role">' + esc(p.jobTitle) + '</p>' : '') +
+      (has(p.summary) ? '<p class="bio">' + text(p.summary) + '</p>' : '') +
+      (contacts.length ? '<ul class="contact">' + contacts.join('') + '</ul>' : '') +
+    '</div></header>' +
+    (html ? '<main class="wrap">' + html + '</main>' : '') +
+    '<footer class="wrap foot">' +
+      '<span>' + esc(p.name) + ' · ' + new Date().getFullYear() + '</span>' +
+      '<span>由 <a href="' + TOOL + '">简历工坊</a> 生成</span>' +
+    '</footer>';
+
+  fab.hidden = false;
+  fab.addEventListener('click', function () { window.print(); });
+})();
+</script>
+</body>
+</html>
