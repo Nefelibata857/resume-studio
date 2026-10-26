@@ -5,6 +5,8 @@
 >
 > **不注册、不上传、不联网。** 所有数据只存在你自己电脑的浏览器里。
 
+### [→ 在线使用](https://nefelibata857.github.io/resume-studio/) · [→ 下载 ZIP](https://github.com/Nefelibata857/resume-studio/archive/refs/heads/main.zip)
+
 <p align="center">
   <img src="docs/preview.png" alt="界面预览" width="100%">
 </p>
@@ -59,7 +61,7 @@
 
 ### 方式一：直接用（推荐）
 
-打开线上版：`https://你的用户名.github.io/resume-studio`
+打开线上版：**https://nefelibata857.github.io/resume-studio/**
 
 ### 方式二：下载到本地
 
@@ -68,7 +70,7 @@
 
 > 也可以直接克隆：
 > ```bash
-> git clone https://github.com/你的用户名/resume-studio.git
+> git clone https://github.com/Nefelibata857/resume-studio.git
 > cd resume-studio
 > python -m http.server 8000    # 可选，起个本地服务器体验更完整
 > ```
