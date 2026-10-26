@@ -55,6 +55,23 @@
   <img src="docs/portfolio.png" alt="作品集页" width="72%">
 </p>
 
+### 一份填满的示例长这样
+
+一页 A4 装下简介、教育、实习、两个项目、三组技能和荣誉 —— 这是工具的上限，不是你的上限。
+
+<p align="center">
+  <img src="docs/sample-resume.png" alt="填好的示例简历" width="58%">
+</p>
+
+想直接看它对应的数据？`samples/` 里有两份：
+
+| 文件 | 用法 |
+| --- | --- |
+| `samples/example-resume-architecture.json` | 在工具里点「导入」选中它，立刻得到上面这份完整简历（含 6 件作品） |
+| `samples/example-homepage.html` | 由这份数据生成的个人主页，单文件，双击就能在浏览器里打开 |
+
+来源是虚构人物「陈嘉禾」，所有占位图都是程序生成的图纸风格 SVG，不涉及任何真实作品。
+
 ---
 
 ## 怎么用
