@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>简历工坊 · Resume Studio</title>
+<meta name="description" content="给大学生的简历与作品集工坊：填表实时预览，一键导出 PDF 简历、生成个人主页和二维码。纯本地运行，数据不上传。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><path d='M30 72V28h16c11 0 18 6 18 15s-7 15-18 15h-6v14z' fill='white'/></svg>">
+<link rel="stylesheet" href="assets/css/app.css">
+<link rel="stylesheet" href="assets/css/resume.css">
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-mark">R</div>
+    <div class="brand-text">
+      <strong>简历工坊</strong>
+      <span>Resume&nbsp;Studio</span>
+    </div>
+  </div>
+
+  <div class="topbar-actions">
+    <div class="seg" id="templateSwitch" role="group" aria-label="简历模板">
+      <button class="seg-btn active" data-template="classic">经典单栏</button>
+      <button class="seg-btn" data-template="sidebar">双栏侧边</button>
+    </div>
+
+    <span class="topbar-sep"></span>
+
+    <button class="btn btn-ghost" id="btnDemo" title="载入一份示例，看看效果">载入示例</button>
+    <button class="btn btn-ghost" id="btnImport" title="导入之前导出的 JSON">导入</button>
+    <button class="btn btn-ghost" id="btnExportJson" title="导出 JSON 备份">备份</button>
+    <input type="file" id="fileImport" accept="application/json" hidden>
+
+    <span class="topbar-sep"></span>
+
+    <button class="btn btn-soft" id="btnSite" title="生成可部署的个人主页">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zM2 8c0-.6.1-1.2.2-1.7h2.3c0 .6-.1 1.1-.1 1.7s0 1.1.1 1.7H2.2C2.1 9.2 2 8.6 2 8zm1.2-3.2h2c.2-.9.5-1.7.9-2.3a5.5 5.5 0 00-2.9 2.3zM8 2.3c.5.5.9 1.4 1.1 2.5H6.9c.2-1.1.6-2 1.1-2.5zm2.7.5c.4.6.7 1.4.9 2.3h2a5.5 5.5 0 00-2.9-2.3zM13.8 6.3h-2.3c.1.6.1 1.1.1 1.7s0 1.1-.1 1.7h2.3c.1-.5.2-1.1.2-1.7s-.1-1.2-.2-1.7zm-.8 4.9h-2c-.2.9-.5 1.7-.9 2.3a5.5 5.5 0 002.9-2.3zM8 13.7c-.5-.5-.9-1.4-1.1-2.5h2.2c-.2 1.1-.6 2-1.1 2.5zm-2.2-4.1c-.1-.6-.1-1.1-.1-1.7s0-1.1.1-1.7h2.4c.1.6.1 1.1.1 1.7s0 1.1-.1 1.7H5.8zM5.9 12c-.4-.6-.7-1.4-.9-2.3h-2A5.5 5.5 0 005.9 12z"/></svg>
+      生成个人主页
+    </button>
+    <button class="btn btn-soft" id="btnQr" title="为你的主页地址生成二维码">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2h5v5H2V2zm1.5 1.5v2h2v-2h-2zM9 2h5v5H9V2zm1.5 1.5v2h2v-2h-2zM2 9h5v5H2V9zm1.5 1.5v2h2v-2h-2zM9 9h2v2H9V9zm3 0h2v2h-2V9zm-3 3h2v2H9v-2zm3 0h2v2h-2v-2z"/></svg>
+      二维码
+    </button>
+    <button class="btn btn-primary" id="btnPdf" title="打印 / 另存为 PDF">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1h5l4 4v3h-1.5V5.5H8V2H5.5v5H4V1zm0 7.5h1.5V14H1V8.5h3zM2.5 10v2H4v-2H2.5zM14 8.5h-3V14h1.5v-1.5H14a2 2 0 000-4zm0 2.5h-1.5v-1H14a.5.5 0 010 1z"/></svg>
+      导出 PDF
+    </button>
+  </div>
+</div>
+
+<main class="layout">
+
+  <!-- ============ 左侧：编辑区 ============ -->
+  <aside class="editor" id="editor">
+    <div class="editor-scroll" id="formRoot"></div>
+    <div class="editor-foot">
+      <span class="save-dot" id="saveDot"></span>
+      <span id="saveText">已自动保存到本机</span>
+      <span class="foot-spacer"></span>
+      <button class="link-btn" id="btnReset">清空全部</button>
+    </div>
+  </aside>
+
+  <!-- ============ 右侧：预览区 ============ -->
+  <section class="stage">
+    <div class="stage-bar">
+      <span class="stage-label">实时预览</span>
+      <span class="stage-hint" id="pageInfo">A4 · 1 页</span>
+      <span class="foot-spacer"></span>
+      <button class="icon-btn" id="zoomOut" title="缩小">−</button>
+      <span class="zoom-val" id="zoomVal">100%</span>
+      <button class="icon-btn" id="zoomIn" title="放大">+</button>
+      <button class="icon-btn" id="zoomFit" title="适应宽度">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1 1h5v1.5H2.5V6H1V1zm9 0h5v5h-1.5V2.5H10V1zM1 10h1.5v3.5H6V15H1v-5zm12.5 0H15v5h-5v-1.5h3.5V10z"/></svg>
+      </button>
+    </div>
+    <div class="stage-scroll" id="stageScroll">
+      <div class="paper-wrap" id="paperWrap">
+        <div id="paperMount"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ============ 弹层：通用 ============ -->
+<div class="modal-mask" id="modalMask" hidden>
+  <div class="modal" id="modalBox" role="dialog" aria-modal="true">
+    <div class="modal-head">
+      <h3 id="modalTitle">标题</h3>
+      <button class="icon-btn" id="modalClose" aria-label="关闭">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-foot" id="modalFoot"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+
+<script src="assets/vendor/qrcode.js"></script>
+<script src="assets/js/util.js"></script>
+<script src="assets/js/schema.js"></script>
+<script src="assets/js/store.js"></script>
+<script src="assets/js/form.js"></script>
+<script src="assets/js/templates.js"></script>
+<script src="assets/js/export.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>
